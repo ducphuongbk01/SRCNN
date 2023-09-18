@@ -2,13 +2,13 @@ import torch
 import torch.nn as nn
 
 
-class SuperResolution(nn.Module):
+class SRCNN(nn.Module):
     """
     Network Architecture as per specified in the paper. 
     The chosen configuration for successive filter sizes are 9-5-5
     The chosed configuration for successive filter depth are 128-64(-3)
     """
-    def __init__(self, sub_image: int = 33, spatial: list = [9, 5, 5], filter: list = [128, 64], num_channels: int = 3):
+    def __init__(self, spatial: list = [9, 5, 5], filter: list = [128, 64], num_channels: int = 3):
         super().__init__()
         self.layer_1 = nn.Conv2d(num_channels, filter[0], spatial[0], padding = spatial[0] // 2)
         self.layer_2 = nn.Conv2d(filter[0], filter[1], spatial[1], padding = spatial[1] // 2)
@@ -22,3 +22,11 @@ class SuperResolution(nn.Module):
         y = self.relu(x)
         x = self.layer_3(y)
         return x, y
+
+
+if __name__ == "__main__":
+    model = SRCNN()
+    x = torch.rand((5, 3, 33, 33))
+    out = model(x)
+    print(out.shape)
+    
